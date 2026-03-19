@@ -1,0 +1,2488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bitly Pricing — Build Your Own Plan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fafafa;
+      color: #1a1a2e;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; font-family: inherit; }
+
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --bitly-orange: #ee6123;
+      --bitly-orange-hover: #d9541a;
+      --bitly-dark: #1a1a2e;
+      --bitly-blue: #2a5bd7;
+      --bitly-purple: #6b3fa0;
+      --bitly-teal: #00857c;
+      --bitly-green: #00a650;
+      --surface: #ffffff;
+      --surface-alt: #f5f5f7;
+      --border: #e5e5ea;
+      --text-secondary: #6e6e80;
+      --text-tertiary: #8e8ea0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+      --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+    }
+
+    /* ===== URGENCY BANNER ===== */
+    .urgency-banner {
+      background: linear-gradient(135deg, #1a1a2e 0%, #2a2a4e 100%);
+      color: white;
+      text-align: center;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      position: relative;
+    }
+    .urgency-banner .urgency-highlight {
+      color: var(--bitly-orange);
+      font-weight: 700;
+    }
+    .urgency-banner .urgency-timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(238,97,35,0.2);
+      padding: 2px 10px;
+      border-radius: 12px;
+      margin-left: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #ffaa70;
+    }
+    .urgency-close {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 18px;
+      padding: 4px;
+      line-height: 1;
+    }
+    .urgency-close:hover { color: white; }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--bitly-orange);
+    }
+    .nav-logo svg { width: 28px; height: 28px; }
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface-alt);
+      border-radius: 10px;
+      padding: 3px;
+    }
+    .nav-tab {
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: none;
+      background: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+    .nav-tab:hover { color: var(--bitly-dark); }
+    .nav-tab.active {
+      background: var(--surface);
+      color: var(--bitly-dark);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      text-align: center;
+      padding: 64px 24px 40px;
+      background: linear-gradient(180deg, #fff 0%, #fafafa 100%);
+    }
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--bitly-orange); }
+    .hero p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    /* ===== BILLING TOGGLE ===== */
+    .billing-toggle-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .billing-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: color 0.2s;
+    }
+    .billing-label.active { color: var(--bitly-dark); font-weight: 600; }
+    .billing-toggle {
+      width: 52px;
+      height: 28px;
+      background: #ccc;
+      border-radius: 14px;
+      border: none;
+      position: relative;
+      transition: background 0.3s;
+    }
+    .billing-toggle.annual { background: var(--bitly-orange); }
+    .billing-toggle::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.3s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .billing-toggle.annual::after { transform: translateX(24px); }
+    .save-badge {
+      display: inline-block;
+      background: #fff3e0;
+      color: var(--bitly-orange);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* ===== BEST VALUE BADGE ===== */
+    .best-value-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      color: #2e7d32;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      animation: badgePulse 2s ease-in-out infinite;
+    }
+    @keyframes badgePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(46,125,50,0.2); }
+      50% { box-shadow: 0 0 0 6px rgba(46,125,50,0); }
+    }
+    .dynamic-savings {
+      text-align: center;
+      font-size: 13px;
+      color: #2e7d32;
+      font-weight: 600;
+      min-height: 20px;
+      margin-bottom: 16px;
+      transition: opacity 0.3s;
+    }
+    .dynamic-savings:empty { opacity: 0; }
+
+    /* ===== SECTION HEADERS ===== */
+    .section-header {
+      text-align: center;
+      padding: 60px 24px 32px;
+    }
+    .section-header h2 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+    .section-header p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ===== STANDARD PLANS GRID ===== */
+    .plans-section { padding: 0 24px 40px; }
+    .plans-grid {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .plan-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.25s;
+    }
+    .plan-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .plan-card.recommended {
+      border-color: var(--bitly-orange);
+      box-shadow: 0 0 0 1px var(--bitly-orange), var(--shadow-md);
+    }
+    .plan-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bitly-orange);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 14px;
+      border-radius: 20px;
+    }
+    .plan-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .plan-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      min-height: 36px;
+    }
+    .plan-price {
+      margin-bottom: 20px;
+    }
+    .plan-price .amount {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    .plan-price .period {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .plan-price .original {
+      font-size: 14px;
+      color: var(--text-tertiary);
+      text-decoration: line-through;
+      margin-left: 4px;
+    }
+    .plan-cta {
+      width: 100%;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--bitly-orange);
+      background: transparent;
+      color: var(--bitly-orange);
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .plan-cta:hover {
+      background: var(--bitly-orange);
+      color: white;
+    }
+    .plan-cta.primary {
+      background: var(--bitly-orange);
+      color: white;
+    }
+    .plan-cta.primary:hover {
+      background: var(--bitly-orange-hover);
+    }
+    .plan-features {
+      list-style: none;
+      flex: 1;
+    }
+    .plan-features li {
+      font-size: 13px;
+      padding: 6px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: #444;
+    }
+    .plan-features li::before {
+      content: '\2713';
+      color: var(--bitly-green);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .plan-features li.disabled {
+      color: var(--text-tertiary);
+    }
+    .plan-features li.disabled::before {
+      content: '\2014';
+      color: var(--text-tertiary);
+    }
+    /* Feature tooltip in plan cards */
+    .plan-features li[data-tip] {
+      cursor: help;
+      position: relative;
+    }
+    .plan-features li[data-tip]:hover {
+      color: var(--bitly-dark);
+    }
+    .feature-tip-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--text-tertiary);
+      font-size: 9px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+    .plan-features li[data-tip]:hover .feature-tip-icon {
+      background: var(--bitly-orange);
+      color: white;
+    }
+    .plan-features li[data-tip]:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: var(--bitly-dark);
+      color: white;
+      font-size: 12px;
+      font-weight: 400;
+      padding: 8px 12px;
+      border-radius: 8px;
+      z-index: 10;
+      box-shadow: var(--shadow-lg);
+      line-height: 1.4;
+      pointer-events: none;
+    }
+
+    /* ===== COMPARE TABLE ===== */
+    .compare-section {
+      padding: 0 24px 60px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .compare-toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 auto 24px;
+      padding: 10px 24px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--bitly-dark);
+      transition: all 0.2s;
+    }
+    .compare-toggle-btn:hover {
+      border-color: var(--bitly-orange);
+      color: var(--bitly-orange);
+    }
+    .compare-toggle-btn .arrow {
+      transition: transform 0.25s;
+      font-size: 12px;
+    }
+    .compare-toggle-btn .arrow.open { transform: rotate(180deg); }
+    .compare-table-wrap {
+      display: none;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+    }
+    .compare-table-wrap.open { display: block; }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .compare-table th, .compare-table td {
+      padding: 12px 16px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .compare-table th {
+      background: var(--surface-alt);
+      font-weight: 700;
+      font-size: 14px;
+      position: sticky;
+      top: 0;
+    }
+    .compare-table th.recommended-col {
+      background: #fff8f4;
+      color: var(--bitly-orange);
+    }
+    .compare-table td:first-child {
+      text-align: left;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-check { color: var(--bitly-green); font-weight: 700; }
+    .compare-dash { color: var(--text-tertiary); }
+    .compare-table .cat-row td {
+      background: var(--surface-alt);
+      font-weight: 700;
+      color: var(--bitly-dark);
+      font-size: 13px;
+      text-align: left;
+    }
+
+    /* ===== USE-CASE SUGGESTIONS ===== */
+    .use-cases-section {
+      padding: 0 24px 60px;
+      background: var(--surface-alt);
+    }
+    .use-cases-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .use-case-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-align: center;
+    }
+    .use-case-card:hover {
+      border-color: var(--bitly-orange);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .use-case-card.selected {
+      border-color: var(--bitly-orange);
+      background: #fff8f4;
+    }
+    .use-case-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 28px;
+    }
+    .use-case-card:nth-child(1) .use-case-icon { background: #e8f5e9; }
+    .use-case-card:nth-child(2) .use-case-icon { background: #e3f2fd; }
+    .use-case-card:nth-child(3) .use-case-icon { background: #fce4ec; }
+    .use-case-card:nth-child(4) .use-case-icon { background: #f3e5f5; }
+    .use-case-name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .use-case-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* ===== BUILD YOUR OWN ===== */
+    .builder-section {
+      padding: 0 24px 80px;
+      background: var(--surface-alt);
+    }
+    .builder-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+      align-items: start;
+    }
+    .builder-main {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    /* ===== PROGRESS INDICATOR ===== */
+    .builder-progress {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      background: linear-gradient(135deg, #f8f4ff, #f0f4ff);
+      border-bottom: 1px solid var(--border);
+    }
+    .progress-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--bitly-purple);
+    }
+    .progress-bar-wrap {
+      flex: 1;
+      max-width: 200px;
+      height: 6px;
+      background: #e0d4f5;
+      border-radius: 3px;
+      margin-left: 16px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--bitly-purple), var(--bitly-blue));
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+    .progress-complete {
+      font-size: 12px;
+      color: var(--bitly-green);
+      font-weight: 600;
+      margin-left: 12px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .progress-complete.show { opacity: 1; }
+
+    .builder-category {
+      border-bottom: 1px solid var(--border);
+    }
+    .builder-category:last-child { border-bottom: none; }
+    .category-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 28px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .category-header:hover { background: var(--surface-alt); }
+    .category-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .category-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .cat-links .category-icon { background: #e3f2fd; }
+    .cat-qr .category-icon { background: #e8f5e9; }
+    .cat-domains .category-icon { background: #fce4ec; }
+    .cat-analytics .category-icon { background: #f3e5f5; }
+    .cat-api .category-icon { background: #fff3e0; }
+    .cat-campaigns .category-icon { background: #e0f7fa; }
+    .category-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .category-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .category-price {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--bitly-orange);
+    }
+    .category-chevron {
+      transition: transform 0.25s;
+      color: var(--text-tertiary);
+    }
+    .category-chevron.open { transform: rotate(180deg); }
+    .category-body {
+      display: none;
+      padding: 0 28px 24px;
+    }
+    .category-body.open { display: block; }
+
+    /* ===== CATEGORY CONFIGURED INDICATOR ===== */
+    .category-configured {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--bitly-green);
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .category-configured.active { opacity: 1; }
+
+    /* Slider row */
+    .slider-row {
+      margin-bottom: 20px;
+    }
+    .slider-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .slider-label-text {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .slider-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--bitly-orange);
+      background: #fff3e0;
+      padding: 2px 10px;
+      border-radius: 6px;
+    }
+    .slider-track {
+      position: relative;
+      width: 100%;
+      height: 6px;
+      background: #e5e5ea;
+      border-radius: 3px;
+      margin-bottom: 6px;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(to right, var(--bitly-orange) 0%, var(--bitly-orange) var(--progress, 0%), #e5e5ea var(--progress, 0%), #e5e5ea 100%);
+      outline: none;
+      transition: background 0.2s;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--bitly-orange);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(238,97,35,0.4);
+      transition: transform 0.15s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    .slider-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    /* Toggle feature */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f3;
+    }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-info {
+      flex: 1;
+    }
+    .toggle-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .toggle-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .toggle-price-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-right: 12px;
+    }
+    .toggle-switch {
+      width: 44px;
+      height: 24px;
+      border-radius: 12px;
+      border: none;
+      background: #d1d1d6;
+      position: relative;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-switch.on { background: var(--bitly-orange); }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .toggle-switch.on::after { transform: translateX(20px); }
+
+    /* Dropdown */
+    .select-row {
+      margin-bottom: 16px;
+    }
+    .select-row label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .select-row select {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--bitly-dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .select-row select:focus { border-color: var(--bitly-orange); }
+
+    /* ===== STICKY SUMMARY SIDEBAR ===== */
+    .summary-sidebar {
+      position: sticky;
+      top: 80px;
+    }
+    .summary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      box-shadow: var(--shadow-md);
+    }
+    .summary-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .summary-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+    .summary-line .label { color: var(--text-secondary); }
+    .summary-line .value { font-weight: 600; }
+    .summary-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0;
+    }
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 8px 0 4px;
+    }
+    .summary-total .label {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .summary-total .value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--bitly-orange);
+      letter-spacing: -1px;
+      transition: transform 0.2s;
+    }
+    .summary-total .value.animate-price {
+      animation: priceChange 0.35s ease;
+    }
+    @keyframes priceChange {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.12); color: var(--bitly-green); }
+      100% { transform: scale(1); }
+    }
+    .summary-total .period {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+    .summary-savings {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      margin: 12px 0;
+    }
+    .summary-cta {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: var(--bitly-orange);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+    .summary-cta:hover {
+      background: var(--bitly-orange-hover);
+      box-shadow: 0 4px 15px rgba(238,97,35,0.35);
+    }
+    .summary-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 10px;
+    }
+
+    /* ===== SHARE & SAVE PLAN BUTTONS ===== */
+    .summary-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .summary-action-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .summary-action-btn:hover {
+      border-color: var(--bitly-orange);
+      color: var(--bitly-orange);
+    }
+    .summary-action-btn.copied {
+      border-color: var(--bitly-green);
+      color: var(--bitly-green);
+      background: #e8f5e9;
+    }
+
+    .comparison-nudge {
+      margin-top: 16px;
+      background: #f5f0ff;
+      border: 1px solid #e0d4f5;
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-size: 13px;
+      text-align: center;
+    }
+    .comparison-nudge strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    .comparison-nudge .compare-price {
+      color: var(--bitly-purple);
+      font-weight: 700;
+    }
+
+    /* ===== SOCIAL PROOF BAR ===== */
+    .social-proof {
+      text-align: center;
+      padding: 48px 24px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+    .social-metrics {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .social-metric {
+      text-align: center;
+    }
+    .social-metric .metric-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--bitly-dark);
+      letter-spacing: -1px;
+    }
+    .social-metric .metric-value span { color: var(--bitly-orange); }
+    .social-metric .metric-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .social-proof-text {
+      font-size: 14px;
+      color: var(--text-tertiary);
+      margin-bottom: 20px;
+    }
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      opacity: 0.5;
+      margin-bottom: 32px;
+    }
+    .logo-row span {
+      font-size: 20px;
+      font-weight: 700;
+      color: #888;
+      letter-spacing: 1px;
+    }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto 32px;
+    }
+    .testimonial-card {
+      background: var(--surface-alt);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      text-align: left;
+    }
+    .testimonial-stars {
+      color: #f9a825;
+      font-size: 14px;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+    }
+    .testimonial-text {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .testimonial-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+    }
+    .testimonial-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .testimonial-role {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .compliance-badges {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+    .compliance-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface-alt);
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+    .compliance-badge svg { width: 16px; height: 16px; fill: var(--bitly-green); }
+
+    /* ===== FAQ ===== */
+    .faq-section {
+      padding: 60px 24px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .faq-section h2 {
+      font-size: 32px;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 18px 0;
+      border: none;
+      background: none;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: left;
+      color: var(--bitly-dark);
+    }
+    .faq-answer {
+      display: none;
+      padding: 0 0 18px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .faq-answer.open { display: block; }
+    .faq-item.highlighted {
+      animation: faqHighlight 2s ease;
+    }
+    @keyframes faqHighlight {
+      0% { background: #fff3e0; }
+      100% { background: transparent; }
+    }
+
+    /* ===== STICKY CTA BAR (Standard Plans) ===== */
+    .sticky-cta-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 90;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    .sticky-cta-bar.visible { transform: translateY(0); }
+    .sticky-cta-info {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .sticky-cta-info strong {
+      color: var(--bitly-dark);
+    }
+    .sticky-cta-info .price {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--bitly-orange);
+    }
+    .sticky-cta-btn {
+      padding: 12px 32px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--bitly-orange);
+      color: white;
+      font-weight: 700;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    .sticky-cta-btn:hover {
+      background: var(--bitly-orange-hover);
+      box-shadow: 0 4px 15px rgba(238,97,35,0.35);
+    }
+    .sticky-cta-trial {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    /* ===== MOBILE PRICE PILL ===== */
+    .mobile-price-pill {
+      display: none;
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      z-index: 85;
+      background: var(--bitly-dark);
+      color: white;
+      padding: 10px 24px;
+      border-radius: 50px;
+      box-shadow: var(--shadow-xl);
+      font-size: 14px;
+      font-weight: 600;
+      align-items: center;
+      gap: 12px;
+      transition: transform 0.3s ease;
+    }
+    .mobile-price-pill.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+    .mobile-price-pill .pill-price {
+      color: var(--bitly-orange);
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .mobile-price-pill .pill-cta {
+      background: var(--bitly-orange);
+      color: white;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* ===== EMAIL CAPTURE MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-card {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      max-width: 440px;
+      width: 90%;
+      text-align: center;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-tertiary);
+      padding: 4px;
+    }
+    .modal-close:hover { color: var(--bitly-dark); }
+    .modal-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+    .modal-card h3 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .modal-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+    .modal-input-row {
+      display: flex;
+      gap: 8px;
+    }
+    .modal-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .modal-input:focus { border-color: var(--bitly-orange); }
+    .modal-submit {
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--bitly-orange);
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .modal-submit:hover { background: var(--bitly-orange-hover); }
+    .modal-success {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .modal-success.show { display: block; }
+    .modal-success .check {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (min-width: 1100px) {
+      .plans-grid { grid-template-columns: repeat(5, 1fr); }
+    }
+    @media (min-width: 700px) and (max-width: 1099px) {
+      .plans-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 699px) {
+      .plans-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .plan-card { padding: 20px 16px; }
+      .plan-price .amount { font-size: 30px; }
+      .plan-name { font-size: 15px; }
+      .plan-desc { font-size: 12px; min-height: 28px; }
+      .plan-features li { font-size: 12px; }
+      .hero h1 { font-size: 28px; }
+      .hero p { font-size: 15px; }
+      .section-header h2 { font-size: 26px; }
+      .use-cases-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .use-case-card { padding: 16px; }
+      .use-case-icon { width: 44px; height: 44px; font-size: 22px; }
+      .use-case-name { font-size: 13px; }
+      .use-case-desc { font-size: 11px; }
+      .nav-tabs { display: none; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .social-metrics { gap: 24px; }
+      .social-metric .metric-value { font-size: 24px; }
+      .urgency-banner { font-size: 12px; padding: 8px 40px 8px 16px; }
+      .urgency-banner .urgency-timer { display: none; }
+    }
+    @media (max-width: 1024px) {
+      .builder-container { grid-template-columns: 1fr; }
+      .summary-sidebar { position: static; }
+      .mobile-price-pill { display: flex; }
+    }
+    @media (max-width: 480px) {
+      .plans-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .sticky-cta-bar { flex-direction: column; gap: 8px; padding: 10px 16px; }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in {
+      animation: fadeUp 0.4s ease forwards;
+    }
+
+    /* Slider animation for preset loading */
+    @keyframes sliderPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+    .slider-animating::-webkit-slider-thumb {
+      animation: sliderPop 0.4s ease;
+    }
+
+    /* ===== TOOLTIP ===== */
+    .info-tip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--text-tertiary);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: help;
+      position: relative;
+      margin-left: 4px;
+    }
+    .info-tip:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bitly-dark);
+      color: white;
+      font-size: 12px;
+      font-weight: 400;
+      padding: 8px 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+      max-width: 260px;
+      white-space: normal;
+      z-index: 10;
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* ===== BUILDER INTRO ===== */
+    .builder-intro {
+      text-align: center;
+      padding: 0 24px 32px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .builder-intro p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .builder-intro .step-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 16px;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bitly-orange);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* Annual savings inline */
+    .annual-savings-inline {
+      display: none;
+      font-size: 12px;
+      color: #2e7d32;
+      font-weight: 600;
+    }
+    body.annual .annual-savings-inline { display: inline; }
+  </style>
+</head>
+<body>
+
+<!-- URGENCY BANNER -->
+<div class="urgency-banner" id="urgencyBanner">
+  <span class="urgency-highlight">Limited time:</span> Lock in current pricing before rates increase April 1
+  <span class="urgency-timer" id="urgencyTimer"></span>
+  <button class="urgency-close" onclick="document.getElementById('urgencyBanner').style.display='none'">&times;</button>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M13.5 2.8c-3 0-5.4 2.4-5.4 5.4v2.6H5.5c-.5 0-1 .4-1 1v9.4c0 .5.4 1 1 1h13c.5 0 1-.4 1-1v-9.4c0-.5-.4-1-1-1h-2.6V8.2c0-3-2.4-5.4-5.4-5.4zm-2.8 5.4c0-1.6 1.3-2.8 2.8-2.8s2.8 1.3 2.8 2.8v2.6H10.7V8.2z"/></svg>
+      Bitly
+    </a>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showSection('plans')">Standard Plans</button>
+      <button class="nav-tab" onclick="showSection('builder')">Build Your Own</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <h1>Connections that <span>convert</span>.</h1>
+  <p>Choose a plan that fits — or build one that's perfectly yours. Only pay for what you actually need.</p>
+  <div class="billing-toggle-wrap">
+    <span class="billing-label" id="lbl-monthly">Monthly</span>
+    <button class="billing-toggle annual" id="billingToggle" onclick="toggleBilling()"></button>
+    <span class="billing-label active" id="lbl-annual">Annual</span>
+    <span class="best-value-badge" id="bestValueBadge">&#10003; Best value</span>
+  </div>
+  <div class="dynamic-savings" id="dynamicSavings"></div>
+</div>
+
+<!-- ===== STANDARD PLANS ===== -->
+<div id="section-plans">
+  <section class="plans-section">
+    <div class="plans-grid" id="plansGrid"></div>
+  </section>
+  <!-- Comparison Table -->
+  <div class="compare-section" id="compareSection">
+    <button class="compare-toggle-btn" onclick="toggleCompare()">
+      Compare all features <span class="arrow" id="compareArrow">&#9660;</span>
+    </button>
+    <div class="compare-table-wrap" id="compareTable"></div>
+  </div>
+</div>
+
+<!-- ===== BUILD YOUR OWN ===== -->
+<div id="section-builder">
+  <!-- Use-case suggestions -->
+  <section class="use-cases-section">
+    <div class="section-header" style="padding-top:20px;">
+      <h2>What best describes you?</h2>
+      <p>Select your role and we'll pre-configure a recommended starting point. You can customize everything after.</p>
+    </div>
+    <div class="use-cases-grid" id="useCasesGrid"></div>
+  </section>
+
+  <!-- Builder -->
+  <section class="builder-section">
+    <div class="section-header" style="padding-top:20px;">
+      <h2>Build Your Plan</h2>
+      <p>Adjust each category to match your exact needs. Pricing updates in real time.</p>
+    </div>
+    <div class="builder-intro">
+      <div class="step-row">
+        <div class="step-item"><div class="step-num">1</div> Pick your role above</div>
+        <div class="step-item"><div class="step-num">2</div> Fine-tune features</div>
+        <div class="step-item"><div class="step-num">3</div> Start your free trial</div>
+      </div>
+    </div>
+    <div class="builder-container">
+      <div class="builder-main" id="builderMain"></div>
+      <div class="summary-sidebar" id="summarySidebar"></div>
+    </div>
+  </section>
+</div>
+
+<!-- SOCIAL PROOF -->
+<section class="social-proof">
+  <!-- Real metrics -->
+  <div class="social-metrics">
+    <div class="social-metric">
+      <div class="metric-value">500<span>K+</span></div>
+      <div class="metric-label">Businesses worldwide</div>
+    </div>
+    <div class="social-metric">
+      <div class="metric-value">5.7<span>B</span></div>
+      <div class="metric-label">Links created</div>
+    </div>
+    <div class="social-metric">
+      <div class="metric-value">800<span>M+</span></div>
+      <div class="metric-label">QR codes generated</div>
+    </div>
+    <div class="social-metric">
+      <div class="metric-value">256<span>B+</span></div>
+      <div class="metric-label">Total connections made</div>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="testimonial-text">"Switching to the Growth plan doubled our click-through rate in two weeks. The custom domain alone was worth the upgrade."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar" style="background:linear-gradient(135deg,#ee6123,#f09030);">S</div>
+        <div>
+          <div class="testimonial-name">Sarah K.</div>
+          <div class="testimonial-role">Head of Growth, SaaS Startup</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="testimonial-text">"We manage 50+ client campaigns through Bitly. The bulk creation and analytics suite saves us hours every week."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar" style="background:linear-gradient(135deg,#2a5bd7,#5b8def);">M</div>
+        <div>
+          <div class="testimonial-name">Marcus T.</div>
+          <div class="testimonial-role">Agency Director, Digital First</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="testimonial-text">"The custom plan builder let us get exactly what we needed without paying for features we don't use. Saved 30% vs. our old plan."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar" style="background:linear-gradient(135deg,#6b3fa0,#9b6fd0);">J</div>
+        <div>
+          <div class="testimonial-name">Jamie L.</div>
+          <div class="testimonial-role">E-Commerce Manager</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="social-proof-text">Trusted by the world's leading brands</div>
+  <div class="logo-row">
+    <span>Disney</span>
+    <span>Nike</span>
+    <span>Spotify</span>
+    <span>ESPN</span>
+    <span>BuzzFeed</span>
+    <span>Gartner</span>
+  </div>
+  <div class="compliance-badges">
+    <div class="compliance-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/></svg>
+      GDPR Compliant
+    </div>
+    <div class="compliance-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/></svg>
+      SOC 2 TYPE 2
+    </div>
+    <div class="compliance-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/></svg>
+      CCPA Compliant
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faqSection"></section>
+
+<!-- STICKY CTA BAR (Standard Plans) -->
+<div class="sticky-cta-bar" id="stickyCta">
+  <div class="sticky-cta-info">
+    Most popular: <strong>Growth</strong> at <span class="price" id="stickyPrice"></span>/mo
+  </div>
+  <button class="sticky-cta-btn">Start Free Trial</button>
+  <span class="sticky-cta-trial">14-day free trial &middot; No credit card</span>
+</div>
+
+<!-- MOBILE PRICE PILL (Builder) -->
+<div class="mobile-price-pill" id="mobilePricePill">
+  <span>Your plan:</span>
+  <span class="pill-price" id="pillPrice">$0</span><span>/mo</span>
+  <button class="pill-cta" onclick="document.getElementById('summarySidebar').scrollIntoView({behavior:'smooth'})">View details</button>
+</div>
+
+<!-- EMAIL CAPTURE MODAL -->
+<div class="modal-overlay" id="emailModal">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeEmailModal()">&times;</button>
+    <div id="emailFormView">
+      <div class="modal-icon">&#128190;</div>
+      <h3>Save your custom plan</h3>
+      <p>Enter your email and we'll send you a link to pick up right where you left off. Plus get notified about exclusive pricing offers.</p>
+      <div class="modal-input-row">
+        <input type="email" class="modal-input" id="emailInput" placeholder="you@company.com">
+        <button class="modal-submit" onclick="submitEmail()">Save plan</button>
+      </div>
+    </div>
+    <div class="modal-success" id="emailSuccess">
+      <div class="check">&#10004;&#65039;</div>
+      <h3>Plan saved!</h3>
+      <p>Check your inbox for a link to your custom plan configuration. We'll also keep you posted on pricing updates.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+let isAnnual = true;
+let lastDisplayPrice = 0;
+
+const standardPlans = [
+  {
+    name: 'Free', desc: 'For individuals getting started',
+    monthly: 0, annual: 0,
+    cta: 'Get Started', primary: false,
+    features: [
+      { text: '5 short links/mo', tip: 'Create up to 5 shortened URLs each month to share across any channel' },
+      { text: '2 QR codes/mo', tip: 'Generate dynamic QR codes that you can update anytime without reprinting' },
+      { text: '2 landing pages', tip: 'Build simple mobile-friendly pages with multiple links, like a link-in-bio' },
+      { text: 'Basic link analytics', tip: 'See total clicks and top referrers for each link you create' },
+      { text: 'Browser extensions & mobile app', tip: 'Shorten links instantly from Chrome, Firefox, or the Bitly mobile app' }
+    ],
+    disabled: [
+      { text: 'No custom domains', tip: 'Custom domains let you use your own brand in short URLs (e.g. yourbrand.co/link)' },
+      { text: 'No branded links', tip: 'Branded links build trust and increase CTR by up to 34%' },
+      { text: 'No data export', tip: 'Export click data to CSV for deeper analysis in Excel or BI tools' }
+    ]
+  },
+  {
+    name: 'Core', desc: 'For personal brands & side projects',
+    monthly: 12, annual: 10,
+    cta: 'Get Started', primary: false,
+    features: [
+      { text: '100 short links/mo', tip: 'Enough for most bloggers, creators, and small businesses' },
+      { text: '5 QR codes/mo', tip: 'Perfect for business cards, flyers, and product packaging' },
+      { text: '5 landing pages', tip: 'Create more link-in-bio pages for different campaigns or profiles' },
+      { text: '30-day analytics history', tip: 'View detailed click data for the past 30 days per link' },
+      { text: 'UTM builder', tip: 'Automatically append UTM parameters for clean campaign tracking in Google Analytics', faq: 'custom-plan' },
+      { text: 'Custom logo on QR', tip: 'Add your brand logo to the center of every QR code you generate' }
+    ],
+    disabled: [
+      { text: 'No custom domains', tip: 'Upgrade to Growth for your own branded short domain' },
+      { text: 'No bulk creation', tip: 'Bulk creation lets you shorten hundreds of links at once via CSV upload' }
+    ]
+  },
+  {
+    name: 'Growth', desc: 'For growing businesses & marketers',
+    monthly: 35, annual: 29, recommended: true,
+    cta: 'Get Started', primary: true,
+    features: [
+      { text: '500 short links/mo', tip: 'Ideal for teams running multiple campaigns across channels' },
+      { text: '10 QR codes/mo', tip: 'Generate QR codes for product lines, menus, events, and more' },
+      { text: '10 landing pages', tip: 'Build dedicated pages for each campaign, event, or product launch' },
+      { text: '1 custom domain included', tip: 'Use your own domain (e.g. go.yoursite.com) for all shortened links' },
+      { text: '120-day analytics history', tip: 'Track performance trends over 4 months to optimize campaigns' },
+      { text: 'Bulk creation (100/upload)', tip: 'Upload a CSV to shorten up to 100 links at once', faq: 'overages' },
+      { text: 'UTM presets', tip: 'Save your most-used UTM templates and apply them with one click' },
+      { text: 'Data export', tip: 'Export all click and engagement data to CSV for custom reporting' }
+    ],
+    disabled: []
+  },
+  {
+    name: 'Premium', desc: 'For teams running campaigns at scale',
+    monthly: 300, annual: 199,
+    cta: 'Get Started', primary: false,
+    features: [
+      { text: '3,000 short links/mo', tip: 'High-volume link creation for large teams and agencies' },
+      { text: '200 QR codes/mo', tip: 'Generate QR codes at scale for retail, events, and product packaging' },
+      { text: '20 landing pages', tip: 'Enough pages for all your campaigns, products, and team members' },
+      { text: 'City & device analytics', tip: 'See exactly where clicks come from by city, device type, and browser' },
+      { text: '1-year data history', tip: 'Full year of historical data for seasonal analysis and annual reporting' },
+      { text: 'Campaign management', tip: 'Organize links into campaigns, set goals, and track performance holistically', faq: 'custom-plan' },
+      { text: 'Mobile deep links', tip: 'Route users directly into your iOS or Android app instead of the mobile web' },
+      { text: 'Bulk creation (3K/upload)', tip: 'Upload massive CSV files to shorten thousands of links at once' }
+    ],
+    disabled: []
+  },
+  {
+    name: 'Enterprise', desc: 'For organizations needing full control',
+    monthly: null, annual: null,
+    cta: 'Get a Quote', primary: false,
+    features: [
+      { text: 'Custom link & QR volume', tip: 'Set your exact volume requirements with dedicated capacity' },
+      { text: 'Multiple custom domains', tip: 'Use different branded domains for different product lines or regions' },
+      { text: '2-year data history', tip: 'Extended data retention for compliance and long-term trend analysis' },
+      { text: 'SSO & group permissions', tip: 'Single sign-on integration and granular role-based access control' },
+      { text: 'Dedicated CSM', tip: 'Your own Customer Success Manager for onboarding, training, and strategy' },
+      { text: '99.9% SLA', tip: 'Enterprise-grade uptime guarantee with credits for any downtime' },
+      { text: 'Priority support', tip: 'Skip the queue with priority routing to senior support engineers' },
+      { text: 'Webhooks & advanced API', tip: 'Real-time event notifications and higher API rate limits for automation' }
+    ],
+    disabled: []
+  }
+];
+
+const useCases = [
+  {
+    id: 'creator', icon: '\uD83C\uDFA8', name: 'Content Creator',
+    desc: 'Social bio links, share content, track engagement',
+    config: { links: 2, qr: 1, domain: true, analytics: 1, api: 0, campaigns: false, deeplinks: false, bulkLinks: 0, bulkQR: 0, landingPages: 1 }
+  },
+  {
+    id: 'marketer', icon: '\uD83D\uDCCA', name: 'Digital Marketer',
+    desc: 'Campaign tracking, UTMs, branded links at scale',
+    config: { links: 3, qr: 2, domain: true, analytics: 2, api: 1, campaigns: true, deeplinks: false, bulkLinks: 1, bulkQR: 1, landingPages: 2 }
+  },
+  {
+    id: 'ecommerce', icon: '\uD83D\uDED2', name: 'E-Commerce',
+    desc: 'Product links, QR on packaging, retargeting',
+    config: { links: 4, qr: 3, domain: true, analytics: 2, api: 2, campaigns: true, deeplinks: true, bulkLinks: 2, bulkQR: 2, landingPages: 2 }
+  },
+  {
+    id: 'agency', icon: '\uD83C\uDFE2', name: 'Agency / Enterprise',
+    desc: 'Multi-client, high volume, white-label reporting',
+    config: { links: 5, qr: 4, domain: true, analytics: 3, api: 3, campaigns: true, deeplinks: true, bulkLinks: 3, bulkQR: 3, landingPages: 3 }
+  }
+];
+
+const linkTiers = [
+  { label: '100/mo', value: 100, price: 6 },
+  { label: '250/mo', value: 250, price: 10 },
+  { label: '500/mo', value: 500, price: 16 },
+  { label: '1,000/mo', value: 1000, price: 26 },
+  { label: '2,000/mo', value: 2000, price: 42 },
+  { label: '5,000/mo', value: 5000, price: 70 }
+];
+
+const qrTiers = [
+  { label: '5/mo', value: 5, price: 3 },
+  { label: '10/mo', value: 10, price: 5 },
+  { label: '25/mo', value: 25, price: 9 },
+  { label: '50/mo', value: 50, price: 15 },
+  { label: '200/mo', value: 200, price: 30 }
+];
+
+const analyticsTiers = [
+  { label: '30 days', value: 30, price: 0 },
+  { label: '120 days', value: 120, price: 5 },
+  { label: '1 year', value: 365, price: 15 },
+  { label: '2 years', value: 730, price: 30 }
+];
+
+const apiTiers = [
+  { label: '5K req/mo', value: 5000, price: 0 },
+  { label: '25K req/mo', value: 25000, price: 5 },
+  { label: '50K req/mo', value: 50000, price: 15 },
+  { label: '150K req/mo', value: 150000, price: 35 }
+];
+
+const bulkLinkTiers = [
+  { label: 'None', value: 0, price: 0 },
+  { label: '100/upload', value: 100, price: 4 },
+  { label: '500/upload', value: 500, price: 8 },
+  { label: '3,000/upload', value: 3000, price: 18 }
+];
+
+const bulkQRTiers = [
+  { label: 'None', value: 0, price: 0 },
+  { label: '10/upload', value: 10, price: 3 },
+  { label: '50/upload', value: 50, price: 7 },
+  { label: '200/upload', value: 200, price: 14 }
+];
+
+const landingPageTiers = [
+  { label: '2 pages', value: 2, price: 0 },
+  { label: '5 pages', value: 5, price: 3 },
+  { label: '10 pages', value: 10, price: 6 },
+  { label: '20 pages', value: 20, price: 12 }
+];
+
+let builderState = {
+  links: 2, qr: 1, domain: true, analytics: 1, api: 0,
+  campaigns: false, deeplinks: false, bulkLinks: 0, bulkQR: 0, landingPages: 1
+};
+
+let openCategories = { links: true, qr: false, domains: false, analytics: false, api: false, campaigns: false };
+let selectedUseCase = null;
+
+// ===== FAQ DATA (declared early for deep-linking) =====
+const faqs = [
+  { id: 'custom-plan', q: 'How does the custom plan builder work?', a: 'Select your role to get a recommended starting point, then adjust each feature category with sliders and toggles. Your price updates in real time. You only pay for what you need \u2014 no wasted features, no surprise costs.' },
+  { id: 'switching', q: 'Can I switch between a custom plan and a standard plan?', a: 'Absolutely. You can switch from a custom plan to any standard plan (or vice versa) at any time. If you upgrade mid-cycle, we prorate the difference. If you downgrade, the change takes effect at your next billing date.' },
+  { id: 'overages', q: 'What happens if I exceed my custom plan limits?', a: "We'll notify you when you reach 80% of your usage limits. You can upgrade specific features on the fly without changing your entire plan. Overages are billed at the per-unit rate shown in the builder \u2014 no surprise multipliers." },
+  { id: 'trial', q: 'Is there a free trial for custom plans?', a: 'Yes \u2014 every custom plan includes a 14-day free trial with full access to all features you selected. No credit card required to start. If you don\'t convert, you\'ll be moved to the Free plan automatically.' },
+  { id: 'annual-billing', q: 'How does annual billing work with custom plans?', a: 'Annual billing gives you a 15% discount on your custom plan total. You\'re billed once per year at the discounted rate. You can still adjust features during the year \u2014 changes are prorated against your annual balance.' },
+  { id: 'flexibility', q: 'What if my needs change after I start?', a: 'Your custom plan is fully flexible. Increase or decrease any feature tier at any time from your account dashboard. Changes to volume limits take effect immediately. Feature additions are prorated; reductions apply at next billing cycle.' }
+];
+
+// ===== RENDER STANDARD PLANS =====
+function renderPlans() {
+  const grid = document.getElementById('plansGrid');
+  grid.innerHTML = standardPlans.map(plan => {
+    const price = plan.monthly === null ? null : (isAnnual ? plan.annual : plan.monthly);
+    const showOriginal = isAnnual && plan.monthly && plan.monthly !== plan.annual;
+    return `
+      <div class="plan-card ${plan.recommended ? 'recommended' : ''}">
+        ${plan.recommended ? '<div class="plan-badge">Most Popular</div>' : ''}
+        <div class="plan-name">${plan.name}</div>
+        <div class="plan-desc">${plan.desc}</div>
+        <div class="plan-price">
+          ${price === null
+            ? '<span class="amount">Custom</span>'
+            : `<span class="amount">$${price}</span><span class="period">/mo</span>
+               ${showOriginal ? `<span class="original">$${plan.monthly}</span>` : ''}`
+          }
+        </div>
+        <button class="plan-cta ${plan.primary ? 'primary' : ''}">${plan.cta}</button>
+        <ul class="plan-features">
+          ${plan.features.map(f => `<li${f.tip ? ` data-tip="${f.tip}"` : ''}${f.faq ? ` onclick="scrollToFAQ('${f.faq}')"` : ''}>${f.text}${f.tip ? '<span class="feature-tip-icon">?</span>' : ''}</li>`).join('')}
+          ${plan.disabled.map(f => `<li class="disabled"${f.tip ? ` data-tip="${f.tip}"` : ''}>${f.text}${f.tip ? '<span class="feature-tip-icon">?</span>' : ''}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+  }).join('');
+  updateStickyPrice();
+}
+
+// ===== RENDER COMPARISON TABLE =====
+function renderCompareTable() {
+  const wrap = document.getElementById('compareTable');
+  const plans = standardPlans.slice(0, 4); // Exclude Enterprise for simplicity
+  const planNames = plans.map((p, i) => `<th${p.recommended ? ' class="recommended-col"' : ''}>${p.name}${p.recommended ? ' \u2B50' : ''}</th>`).join('');
+
+  const rows = [
+    { cat: 'Links & QR' },
+    { label: 'Short links/mo', values: ['5', '100', '500', '3,000'] },
+    { label: 'QR codes/mo', values: ['2', '5', '10', '200'] },
+    { label: 'Bulk creation', values: ['\u2014', '\u2014', '100/upload', '3K/upload'] },
+    { cat: 'Domains & Branding' },
+    { label: 'Custom domain', values: ['\u2014', '\u2014', '\u2713', '\u2713'] },
+    { label: 'Branded QR codes', values: ['\u2014', '\u2713', '\u2713', '\u2713'] },
+    { label: 'Landing pages', values: ['2', '5', '10', '20'] },
+    { cat: 'Analytics' },
+    { label: 'Data history', values: ['None', '30 days', '120 days', '1 year'] },
+    { label: 'City & device data', values: ['\u2014', '\u2014', '\u2014', '\u2713'] },
+    { label: 'Data export', values: ['\u2014', '\u2014', '\u2713', '\u2713'] },
+    { cat: 'Advanced' },
+    { label: 'UTM builder', values: ['\u2014', '\u2713', '\u2713', '\u2713'] },
+    { label: 'Campaign management', values: ['\u2014', '\u2014', '\u2014', '\u2713'] },
+    { label: 'Mobile deep links', values: ['\u2014', '\u2014', '\u2014', '\u2713'] },
+    { label: 'API access', values: ['\u2014', '\u2014', '5K req/mo', '50K req/mo'] }
+  ];
+
+  wrap.innerHTML = `<table class="compare-table">
+    <thead><tr><th></th>${planNames}</tr></thead>
+    <tbody>
+      ${rows.map(r => {
+        if (r.cat) return `<tr class="cat-row"><td colspan="5">${r.cat}</td></tr>`;
+        return `<tr><td>${r.label}</td>${r.values.map((v, i) => {
+          const cls = v === '\u2713' ? 'compare-check' : v === '\u2014' ? 'compare-dash' : '';
+          const recCls = plans[i]?.recommended ? ' style="background:#fffaf6;"' : '';
+          return `<td class="${cls}"${recCls}>${v}</td>`;
+        }).join('')}</tr>`;
+      }).join('')}
+    </tbody>
+  </table>`;
+}
+
+function toggleCompare() {
+  const table = document.getElementById('compareTable');
+  const arrow = document.getElementById('compareArrow');
+  table.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+// ===== RENDER USE CASES =====
+function renderUseCases() {
+  const grid = document.getElementById('useCasesGrid');
+  grid.innerHTML = useCases.map(uc => `
+    <div class="use-case-card ${selectedUseCase === uc.id ? 'selected' : ''}"
+         onclick="selectUseCase('${uc.id}')">
+      <div class="use-case-icon">${uc.icon}</div>
+      <div class="use-case-name">${uc.name}</div>
+      <div class="use-case-desc">${uc.desc}</div>
+    </div>
+  `).join('');
+}
+
+function selectUseCase(id) {
+  selectedUseCase = id;
+  const uc = useCases.find(u => u.id === id);
+  builderState = { ...uc.config };
+  renderUseCases();
+  renderBuilder();
+  renderSummary();
+  // Animate sliders after render
+  setTimeout(() => {
+    document.querySelectorAll('input[type="range"]').forEach(el => {
+      el.classList.add('slider-animating');
+      setTimeout(() => el.classList.remove('slider-animating'), 500);
+    });
+  }, 50);
+  document.getElementById('builderMain').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ===== PROGRESS INDICATOR =====
+function getBuilderProgress() {
+  const defaults = { links: 2, qr: 1, domain: true, analytics: 1, api: 0, campaigns: false, deeplinks: false, bulkLinks: 0, bulkQR: 0, landingPages: 1 };
+  let configured = 0;
+  const categories = {
+    links: () => builderState.links !== 0 || builderState.bulkLinks !== 0,
+    qr: () => builderState.qr !== 0 || builderState.bulkQR !== 0,
+    domains: () => true, // always has a decision
+    analytics: () => true,
+    api: () => true,
+    campaigns: () => true
+  };
+  for (const key in categories) {
+    if (categories[key]()) configured++;
+  }
+  return { configured, total: 6 };
+}
+
+// ===== RENDER BUILDER =====
+function renderBuilder() {
+  const main = document.getElementById('builderMain');
+  const progress = getBuilderProgress();
+  const pct = Math.round((progress.configured / progress.total) * 100);
+
+  main.innerHTML = `
+    <div class="builder-progress">
+      <span class="progress-text">${progress.configured} of ${progress.total} categories configured</span>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" style="width:${pct}%"></div>
+      </div>
+      <span class="progress-complete ${pct === 100 ? 'show' : ''}">&#10003; All set!</span>
+    </div>
+    ${renderCategory('links', 'cat-links', '\uD83D\uDD17', 'Short Links', 'Monthly link creation volume', () => `
+      ${renderSlider('links', 'Short links per month', linkTiers)}
+      ${renderSlider('bulkLinks', 'Bulk link upload', bulkLinkTiers)}
+    `)}
+    ${renderCategory('qr', 'cat-qr', '\uD83D\uDCF1', 'QR Codes', 'Dynamic QR code generation', () => `
+      ${renderSlider('qr', 'QR codes per month', qrTiers)}
+      ${renderSlider('bulkQR', 'Bulk QR upload', bulkQRTiers)}
+    `)}
+    ${renderCategory('domains', 'cat-domains', '\uD83C\uDF10', 'Custom Domains', 'Branded short domain', () => `
+      ${renderToggle('domain', 'Custom Domain', 'Use your own branded short domain (e.g. yourbrand.co)', 8)}
+    `)}
+    ${renderCategory('analytics', 'cat-analytics', '\uD83D\uDCC8', 'Analytics & Reporting', 'Data retention & depth', () => `
+      ${renderSlider('analytics', 'Data history retention', analyticsTiers)}
+    `)}
+    ${renderCategory('api', 'cat-api', '\u26A1', 'API & Integrations', 'Developer access & volume', () => `
+      ${renderSlider('api', 'API requests per month', apiTiers)}
+    `)}
+    ${renderCategory('campaigns', 'cat-campaigns', '\uD83C\uDFAF', 'Advanced Features', 'Campaigns, deep links, landing pages', () => `
+      ${renderToggle('campaigns', 'Campaign Management', 'Group links into campaigns with UTM presets & bulk import', 12)}
+      ${renderToggle('deeplinks', 'Mobile Deep Links', 'Route users directly into your mobile app', 10)}
+      ${renderSlider('landingPages', 'Landing pages', landingPageTiers)}
+    `)}
+  `;
+  updateAllSliderProgress();
+}
+
+function renderCategory(key, catClass, icon, title, subtitle, contentFn) {
+  const isOpen = openCategories[key];
+  const catPrice = getCategoryPrice(key);
+  const isConfigured = catPrice > 0;
+  return `
+    <div class="builder-category ${catClass}">
+      <div class="category-header" onclick="toggleCategory('${key}')">
+        <div class="category-header-left">
+          <div class="category-icon">${icon}</div>
+          <div>
+            <div class="category-title">${title}</div>
+            <div class="category-subtitle">${subtitle}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="category-configured ${isConfigured ? 'active' : ''}"></div>
+          <span class="category-price">${catPrice > 0 ? `+$${catPrice}/mo` : 'Included'}</span>
+          <span class="category-chevron ${isOpen ? 'open' : ''}">\u25BC</span>
+        </div>
+      </div>
+      <div class="category-body ${isOpen ? 'open' : ''}">
+        ${contentFn()}
+      </div>
+    </div>
+  `;
+}
+
+function getCategoryPrice(key) {
+  switch (key) {
+    case 'links': return linkTiers[builderState.links].price + bulkLinkTiers[builderState.bulkLinks].price;
+    case 'qr': return qrTiers[builderState.qr].price + bulkQRTiers[builderState.bulkQR].price;
+    case 'domains': return builderState.domain ? 8 : 0;
+    case 'analytics': return analyticsTiers[builderState.analytics].price;
+    case 'api': return apiTiers[builderState.api].price;
+    case 'campaigns':
+      return (builderState.campaigns ? 12 : 0) + (builderState.deeplinks ? 10 : 0) + landingPageTiers[builderState.landingPages].price;
+    default: return 0;
+  }
+}
+
+function renderSlider(key, label, tiers) {
+  const idx = builderState[key];
+  const tier = tiers[idx];
+  const max = tiers.length - 1;
+  const progress = max > 0 ? (idx / max) * 100 : 0;
+  return `
+    <div class="slider-row">
+      <div class="slider-label">
+        <span class="slider-label-text">${label}</span>
+        <span class="slider-value">${tier.label} ${tier.price > 0 ? `\u2014 $${tier.price}/mo` : '\u2014 Free'}</span>
+      </div>
+      <input type="range" min="0" max="${max}" value="${idx}"
+             style="--progress: ${progress}%"
+             oninput="updateSlider('${key}', this, ${JSON.stringify(tiers).replace(/"/g, '&quot;')})">
+      <div class="slider-ticks">
+        ${tiers.map(t => `<span>${t.label.split('/')[0]}</span>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderToggle(key, name, desc, price) {
+  const isOn = builderState[key];
+  return `
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-name">${name}</div>
+        <div class="toggle-desc">${desc}</div>
+      </div>
+      <span class="toggle-price-label">+$${price}/mo</span>
+      <button class="toggle-switch ${isOn ? 'on' : ''}" onclick="toggleFeature('${key}')"></button>
+    </div>
+  `;
+}
+
+function toggleCategory(key) {
+  openCategories[key] = !openCategories[key];
+  renderBuilder();
+}
+
+function updateSlider(key, el, tiers) {
+  const idx = parseInt(el.value);
+  builderState[key] = idx;
+  const max = tiers.length - 1;
+  el.style.setProperty('--progress', max > 0 ? `${(idx / max) * 100}%` : '0%');
+  renderBuilder();
+  renderSummary();
+}
+
+function updateAllSliderProgress() {
+  document.querySelectorAll('input[type="range"]').forEach(el => {
+    const max = parseInt(el.max);
+    const val = parseInt(el.value);
+    el.style.setProperty('--progress', max > 0 ? `${(val / max) * 100}%` : '0%');
+  });
+}
+
+function toggleFeature(key) {
+  builderState[key] = !builderState[key];
+  renderBuilder();
+  renderSummary();
+}
+
+// ===== CALCULATE PRICE =====
+function getBuilderMonthlyPrice() {
+  let total = 5; // Base fee
+  total += linkTiers[builderState.links].price;
+  total += bulkLinkTiers[builderState.bulkLinks].price;
+  total += qrTiers[builderState.qr].price;
+  total += bulkQRTiers[builderState.bulkQR].price;
+  if (builderState.domain) total += 8;
+  total += analyticsTiers[builderState.analytics].price;
+  total += apiTiers[builderState.api].price;
+  if (builderState.campaigns) total += 12;
+  if (builderState.deeplinks) total += 10;
+  total += landingPageTiers[builderState.landingPages].price;
+  return total;
+}
+
+function getClosestPlan(monthlyPrice) {
+  const planPrices = [
+    { name: 'Free', price: 0 },
+    { name: 'Core', price: isAnnual ? 10 : 12 },
+    { name: 'Growth', price: isAnnual ? 29 : 35 },
+    { name: 'Premium', price: isAnnual ? 199 : 300 }
+  ];
+  let closest = planPrices[0];
+  for (const p of planPrices) {
+    if (p.price <= monthlyPrice) closest = p;
+  }
+  const idx = planPrices.indexOf(closest);
+  const nextUp = idx < planPrices.length - 1 ? planPrices[idx + 1] : null;
+  return { closest, nextUp };
+}
+
+// ===== SHARE PLAN =====
+function encodePlanToURL() {
+  const params = new URLSearchParams();
+  for (const [k, v] of Object.entries(builderState)) {
+    params.set(k, v);
+  }
+  params.set('annual', isAnnual ? '1' : '0');
+  return window.location.origin + window.location.pathname + '?' + params.toString();
+}
+
+function sharePlan() {
+  const url = encodePlanToURL();
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('sharePlanBtn');
+    btn.classList.add('copied');
+    btn.innerHTML = '\u2713 Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '\uD83D\uDD17 Share plan';
+    }, 2000);
+  });
+}
+
+function loadPlanFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('links')) {
+    builderState.links = parseInt(params.get('links')) || 0;
+    builderState.qr = parseInt(params.get('qr')) || 0;
+    builderState.domain = params.get('domain') === 'true';
+    builderState.analytics = parseInt(params.get('analytics')) || 0;
+    builderState.api = parseInt(params.get('api')) || 0;
+    builderState.campaigns = params.get('campaigns') === 'true';
+    builderState.deeplinks = params.get('deeplinks') === 'true';
+    builderState.bulkLinks = parseInt(params.get('bulkLinks')) || 0;
+    builderState.bulkQR = parseInt(params.get('bulkQR')) || 0;
+    builderState.landingPages = parseInt(params.get('landingPages')) || 0;
+    if (params.get('annual') === '0') {
+      isAnnual = false;
+    }
+    return true;
+  }
+  return false;
+}
+
+// ===== RENDER SUMMARY =====
+function renderSummary() {
+  const sidebar = document.getElementById('summarySidebar');
+  const monthlyPrice = getBuilderMonthlyPrice();
+  const annualPrice = Math.round(monthlyPrice * 0.85);
+  const displayPrice = isAnnual ? annualPrice : monthlyPrice;
+  const annualSavings = isAnnual ? (monthlyPrice - annualPrice) * 12 : 0;
+  const { closest, nextUp } = getClosestPlan(displayPrice);
+
+  const priceChanged = displayPrice !== lastDisplayPrice;
+  lastDisplayPrice = displayPrice;
+
+  // Build line items
+  const items = [];
+  items.push({ label: 'Platform base', value: '$5' });
+  if (linkTiers[builderState.links].price > 0)
+    items.push({ label: `Links (${linkTiers[builderState.links].label})`, value: `$${linkTiers[builderState.links].price}` });
+  if (bulkLinkTiers[builderState.bulkLinks].price > 0)
+    items.push({ label: `Bulk links (${bulkLinkTiers[builderState.bulkLinks].label})`, value: `$${bulkLinkTiers[builderState.bulkLinks].price}` });
+  if (qrTiers[builderState.qr].price > 0)
+    items.push({ label: `QR codes (${qrTiers[builderState.qr].label})`, value: `$${qrTiers[builderState.qr].price}` });
+  if (bulkQRTiers[builderState.bulkQR].price > 0)
+    items.push({ label: `Bulk QR (${bulkQRTiers[builderState.bulkQR].label})`, value: `$${bulkQRTiers[builderState.bulkQR].price}` });
+  if (builderState.domain)
+    items.push({ label: 'Custom domain', value: '$8' });
+  if (analyticsTiers[builderState.analytics].price > 0)
+    items.push({ label: `Analytics (${analyticsTiers[builderState.analytics].label})`, value: `$${analyticsTiers[builderState.analytics].price}` });
+  if (apiTiers[builderState.api].price > 0)
+    items.push({ label: `API (${apiTiers[builderState.api].label})`, value: `$${apiTiers[builderState.api].price}` });
+  if (builderState.campaigns)
+    items.push({ label: 'Campaigns', value: '$12' });
+  if (builderState.deeplinks)
+    items.push({ label: 'Deep links', value: '$10' });
+  if (landingPageTiers[builderState.landingPages].price > 0)
+    items.push({ label: `Landing pages (${landingPageTiers[builderState.landingPages].label})`, value: `$${landingPageTiers[builderState.landingPages].price}` });
+
+  // Comparison nudge
+  let nudgeHTML = '';
+  if (nextUp && displayPrice >= closest.price && nextUp.price - displayPrice <= 10 && nextUp.price > displayPrice) {
+    nudgeHTML = `
+      <div class="comparison-nudge">
+        <strong>\uD83D\uDCA1 Just $${nextUp.price - displayPrice}/mo more for ${nextUp.name}</strong>
+        The ${nextUp.name} plan includes additional features at <span class="compare-price">$${nextUp.price}/mo</span>
+      </div>
+    `;
+  } else if (displayPrice > 0 && closest.price > 0 && displayPrice < closest.price + 5) {
+    nudgeHTML = `
+      <div class="comparison-nudge">
+        <strong>\uD83D\uDCCB Similar to ${closest.name}</strong>
+        Your config is close to the <span class="compare-price">${closest.name} plan ($${closest.price}/mo)</span>. Consider it for bundled savings.
+      </div>
+    `;
+  }
+
+  sidebar.innerHTML = `
+    <div class="summary-card">
+      <div class="summary-title">Your Custom Plan</div>
+      <div class="summary-subtitle">${selectedUseCase ? useCases.find(u=>u.id===selectedUseCase).name + ' configuration' : 'Fully customized'}</div>
+      ${items.map(i => `
+        <div class="summary-line">
+          <span class="label">${i.label}</span>
+          <span class="value">${i.value}</span>
+        </div>
+      `).join('')}
+      <div class="summary-divider"></div>
+      ${isAnnual ? `
+        <div class="summary-line">
+          <span class="label">Monthly subtotal</span>
+          <span class="value" style="text-decoration:line-through;color:var(--text-tertiary);">$${monthlyPrice}</span>
+        </div>
+        <div class="summary-line">
+          <span class="label">Annual discount (15%)</span>
+          <span class="value" style="color:#2e7d32;">-$${monthlyPrice - annualPrice}</span>
+        </div>
+      ` : ''}
+      <div class="summary-total">
+        <span class="label">Total</span>
+        <span class="value ${priceChanged ? 'animate-price' : ''}">$${displayPrice}<span class="period">/mo</span></span>
+      </div>
+      ${isAnnual && annualSavings > 0 ? `<div class="summary-savings">\u2B50 You save $${annualSavings}/year with annual billing</div>` : ''}
+      <button class="summary-cta">Start Free Trial</button>
+      <div class="summary-note">14-day free trial. No credit card required.<br>Cancel or switch plans anytime.</div>
+      <div class="summary-actions">
+        <button class="summary-action-btn" id="sharePlanBtn" onclick="sharePlan()">\uD83D\uDD17 Share plan</button>
+        <button class="summary-action-btn" onclick="openEmailModal()">\uD83D\uDCE7 Save & send</button>
+      </div>
+      ${nudgeHTML}
+    </div>
+  `;
+
+  // Update mobile pill
+  const pill = document.getElementById('pillPrice');
+  if (pill) pill.textContent = '$' + displayPrice;
+}
+
+// ===== FAQ =====
+function renderFAQ() {
+  const section = document.getElementById('faqSection');
+  section.innerHTML = `
+    <h2>Frequently Asked Questions</h2>
+    ${faqs.map((faq, i) => `
+      <div class="faq-item" id="faq-item-${faq.id}">
+        <button class="faq-question" onclick="toggleFAQ(${i})">
+          ${faq.q}
+          <span id="faq-icon-${i}">+</span>
+        </button>
+        <div class="faq-answer" id="faq-${i}">${faq.a}</div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function toggleFAQ(i) {
+  const answer = document.getElementById(`faq-${i}`);
+  const icon = document.getElementById(`faq-icon-${i}`);
+  answer.classList.toggle('open');
+  icon.textContent = answer.classList.contains('open') ? '\u2212' : '+';
+}
+
+function scrollToFAQ(faqId) {
+  const el = document.getElementById(`faq-item-${faqId}`);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // Open it
+  const idx = faqs.findIndex(f => f.id === faqId);
+  if (idx >= 0) {
+    const answer = document.getElementById(`faq-${idx}`);
+    const icon = document.getElementById(`faq-icon-${idx}`);
+    if (!answer.classList.contains('open')) {
+      answer.classList.add('open');
+      icon.textContent = '\u2212';
+    }
+  }
+  el.classList.add('highlighted');
+  setTimeout(() => el.classList.remove('highlighted'), 2100);
+}
+
+// ===== BILLING TOGGLE =====
+function toggleBilling() {
+  isAnnual = !isAnnual;
+  const btn = document.getElementById('billingToggle');
+  btn.classList.toggle('annual', isAnnual);
+  document.getElementById('lbl-monthly').classList.toggle('active', !isAnnual);
+  document.getElementById('lbl-annual').classList.toggle('active', isAnnual);
+  document.body.classList.toggle('annual', isAnnual);
+  document.getElementById('bestValueBadge').style.opacity = isAnnual ? '1' : '0.4';
+  renderPlans();
+  renderSummary();
+  updateDynamicSavings();
+}
+
+function updateDynamicSavings() {
+  const el = document.getElementById('dynamicSavings');
+  if (isAnnual) {
+    // Calculate savings for Growth plan (most popular)
+    const growthMonthly = 35;
+    const growthAnnual = 29;
+    const savings = (growthMonthly - growthAnnual) * 12;
+    el.textContent = `You're saving $${savings}/year on Growth with annual billing`;
+  } else {
+    el.textContent = 'Switch to annual billing to save up to 34%';
+  }
+}
+
+function updateStickyPrice() {
+  const el = document.getElementById('stickyPrice');
+  if (el) {
+    const growthPrice = isAnnual ? 29 : 35;
+    el.textContent = '$' + growthPrice;
+  }
+}
+
+// ===== SECTION TOGGLE =====
+function showSection(section) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  if (section === 'plans') {
+    document.querySelectorAll('.nav-tab')[0].classList.add('active');
+    document.getElementById('section-plans').style.display = '';
+    document.getElementById('section-builder').style.display = 'none';
+  } else {
+    document.querySelectorAll('.nav-tab')[1].classList.add('active');
+    document.getElementById('section-plans').style.display = 'none';
+    document.getElementById('section-builder').style.display = '';
+  }
+}
+
+// ===== EMAIL CAPTURE =====
+function openEmailModal() {
+  document.getElementById('emailModal').classList.add('open');
+  document.getElementById('emailFormView').style.display = '';
+  document.getElementById('emailSuccess').classList.remove('show');
+  setTimeout(() => document.getElementById('emailInput').focus(), 100);
+}
+
+function closeEmailModal() {
+  document.getElementById('emailModal').classList.remove('open');
+}
+
+function submitEmail() {
+  const email = document.getElementById('emailInput').value;
+  if (!email || !email.includes('@')) {
+    document.getElementById('emailInput').style.borderColor = '#e53935';
+    return;
+  }
+  // Simulate submission
+  document.getElementById('emailFormView').style.display = 'none';
+  document.getElementById('emailSuccess').classList.add('show');
+  setTimeout(closeEmailModal, 2500);
+}
+
+// ===== EXIT INTENT =====
+let exitIntentShown = false;
+document.addEventListener('mouseout', (e) => {
+  if (e.clientY < 5 && !exitIntentShown && document.getElementById('section-builder').style.display !== 'none') {
+    exitIntentShown = true;
+    openEmailModal();
+  }
+});
+
+// ===== STICKY CTA BAR =====
+function handleStickyCta() {
+  const plansSection = document.getElementById('section-plans');
+  const bar = document.getElementById('stickyCta');
+  if (plansSection.style.display === 'none') {
+    bar.classList.remove('visible');
+    return;
+  }
+  const rect = plansSection.getBoundingClientRect();
+  const heroRect = document.getElementById('hero').getBoundingClientRect();
+  // Show when plans are in view but hero CTAs are scrolled past
+  if (heroRect.bottom < 0 && rect.bottom > 200) {
+    bar.classList.add('visible');
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+// ===== MOBILE PRICE PILL =====
+function handleMobilePill() {
+  if (window.innerWidth > 1024) return;
+  const builderSection = document.getElementById('section-builder');
+  const pill = document.getElementById('mobilePricePill');
+  if (builderSection.style.display === 'none') {
+    pill.classList.remove('visible');
+    return;
+  }
+  const sidebar = document.getElementById('summarySidebar');
+  if (!sidebar) return;
+  const rect = sidebar.getBoundingClientRect();
+  // Show pill when sidebar is below viewport
+  if (rect.top > window.innerHeight) {
+    pill.classList.add('visible');
+  } else {
+    pill.classList.remove('visible');
+  }
+}
+
+// ===== URGENCY TIMER =====
+function startUrgencyTimer() {
+  const timerEl = document.getElementById('urgencyTimer');
+  // Countdown to end of month
+  function update() {
+    const now = new Date();
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const diff = endOfMonth - now;
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    timerEl.textContent = `${days}d ${hours}h remaining`;
+  }
+  update();
+  setInterval(update, 60000);
+}
+
+// ===== SCROLL LISTENERS =====
+window.addEventListener('scroll', () => {
+  handleStickyCta();
+  handleMobilePill();
+}, { passive: true });
+
+// ===== INIT =====
+function init() {
+  const hadParams = loadPlanFromURL();
+  document.body.classList.add('annual');
+  renderPlans();
+  renderCompareTable();
+  renderUseCases();
+  renderBuilder();
+  renderSummary();
+  renderFAQ();
+  updateDynamicSavings();
+  startUrgencyTimer();
+  // Show both sections by default
+  document.getElementById('section-plans').style.display = '';
+  document.getElementById('section-builder').style.display = '';
+  // If loaded from shared URL, scroll to builder
+  if (hadParams) {
+    setTimeout(() => {
+      document.getElementById('section-builder').scrollIntoView({ behavior: 'smooth' });
+    }, 300);
+  }
+}
+
+init();
+</script>
+
+</body>
+</html>
